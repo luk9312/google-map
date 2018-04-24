@@ -1,0 +1,36 @@
+<div class="container">
+  <h1>Angular 2 + Google Maps Places Autocomplete</h1>
+  <div class="form-group">
+    <input 
+      placeholder="search for location" 
+      autocorrect="off" 
+      autocapitalize="off" 
+      spellcheck="off" 
+      type="text" 
+      class="form-control" 
+      #search 
+      [formControl]="searchControl">
+  </div>
+  <agm-map 
+    [latitude]="lat" 
+    [longitude]="lng" 
+    [scrollwheel]="false" 
+    [zoom]="zoom"
+    (mapReady)="setup($event)">
+
+    <agm-marker
+      [latitude]="marker.lat"
+      [longitude]="marker.lng"
+      [label]="marker.label"
+      [markerDraggable]="marker.draggable"
+      [visible]="marker.visible"
+      (dragEnd)="markerDragEnd(marker, $event)">
+    </agm-marker>
+
+    <agm-polygon
+      [paths]="selectedArea">
+    </agm-polygon>
+
+  </agm-map>
+
+</div>
