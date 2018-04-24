@@ -1,11 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { ElevationService } from './elevation.service';
 
 
 import { AppComponent } from './app.component';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
-// import { GoogleMapsConfigLoader } from './GoogleMapsConfigLoader';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo',
@@ -22,6 +24,7 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
     })
   ],
   providers: [
+    ElevationService,
     GoogleMapsAPIWrapper
   ],
   bootstrap: [AppComponent]

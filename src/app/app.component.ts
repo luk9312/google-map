@@ -1,8 +1,10 @@
 import { Component, ElementRef, NgModule, NgZone, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import { FormControl, FormsModule } from "@angular/forms";
 
-import { MouseEvent, MapsAPILoader, AgmPolygon, GoogleMapsAPIWrapper } from '@agm/core';
+import { MouseEvent, MapsAPILoader, AgmPolygon } from '@agm/core';
 import {} from '@types/googlemaps';
+
+import { ElevationService } from './elevation.service';
 
 declare var google: any;
 
@@ -21,11 +23,6 @@ interface marker {
 })
 
 export class AppComponent implements OnInit,AfterViewInit{
-  // Google Maps
-  bounds: google.maps.LatLngBounds;
-  markers: google.maps.Marker[];
-  infoWindow: google.maps.InfoWindow;
-  latLng: google.maps.LatLng;
 
   // google maps zoom level
   zoom: number;
@@ -33,7 +30,8 @@ export class AppComponent implements OnInit,AfterViewInit{
   // initial center position for the map
   lat: number;
   lng: number;
-  type: string = "terrain";
+  type: string;
+  height: number;
   marker: marker;
   public searchControl: FormControl;
 
@@ -48,6 +46,7 @@ export class AppComponent implements OnInit,AfterViewInit{
   
 
   constructor(
+    private elevation: ElevationService,
     private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone
   ){}
@@ -57,6 +56,7 @@ export class AppComponent implements OnInit,AfterViewInit{
     this.zoom = 12;
     this.lat = 43.473478949190415;
     this.lng = -80.54589994476481;
+    this.type = "terrain";
     // initial center point as marker
     this.marker = {
       lat: this.lat,
@@ -126,7 +126,16 @@ export class AppComponent implements OnInit,AfterViewInit{
     this.marker.lng = $event.coords.lng;
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
-    console.log(this.selectedArea);
+    let lot1 = new google.maps.LatLng($event.coords.lat, $event.coords.lng);
+    let testing = [lot1];               
+    this.getElevation(testing);
+  }
+
+  getElevation (arr) {
+    this.elevation.getData(arr).subscribe(resp => {
+      let dataSet = resp.results;
+      console.log(dataSet);
+    })
   }
 
 

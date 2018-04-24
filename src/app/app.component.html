@@ -1,5 +1,6 @@
 <div class="container">
   <h1>Angular 2 + Google Maps Places Autocomplete</h1>
+
   <div class="form-group">
     <input 
       placeholder="search for location" 
@@ -11,9 +12,11 @@
       #search 
       [formControl]="searchControl">
   </div>
+
   <agm-map 
     [latitude]="lat" 
     [longitude]="lng" 
+    [mapTypeId]="type"
     [scrollwheel]="false" 
     [zoom]="zoom"
     (mapReady)="setup($event)">
@@ -32,5 +35,9 @@
     </agm-polygon>
 
   </agm-map>
+
+  <div>
+    <h3>Elvetion at position C: {{ this.height }}</h3>
+  </div>
 
 </div>
