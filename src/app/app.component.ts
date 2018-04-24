@@ -89,7 +89,12 @@ export class AppComponent implements OnInit,AfterViewInit{
           //set latitude, longitude and zoom
           this.lat = place.geometry.location.lat();
           this.lng = place.geometry.location.lng();
-          this.zoom = 12;
+          this.marker.lat = place.geometry.location.lat();
+          this.marker.lng = place.geometry.location.lng();
+          this.zoom = 8;
+          this.selectedArea=[];
+          console.log('marker',this.marker.lat, this.marker.lng);
+          this.setNewPaths(this.marker.lat, this.marker.lng);
         });
       });
     });
@@ -100,20 +105,19 @@ export class AppComponent implements OnInit,AfterViewInit{
   setup($event){
     this.selectedArea=[];
     console.log('marker',this.marker.lat, this.marker.lng);
-    // this.setNewPaths(this.marker.lat, this.marker.lng);
+    this.setNewPaths(this.marker.lat, this.marker.lng);
   }
 
   setNewPaths(lat:number, lng: number) {
-    let origin = new google.map.latLng(lat, lng);
-    console.log('origin', origin);
-    let ne = google.maps.geometry.spherical.computeOffset(origin, 25000, 0);
-    ne = google.maps.geometry.spherical.computeOffset(ne, 25000, 90);
+    let origin = new google.maps.LatLng(lat, lng);
+    let ne = google.maps.geometry.spherical.computeOffset(origin, 50000, 0);
+    ne = google.maps.geometry.spherical.computeOffset(ne, 50000, 90);
     this.selectedArea[0]={lat: ne.lat(),lng: ne.lng()};
-    let se = google.maps.geometry.spherical.computeOffset(ne, 50000, 180);
+    let se = google.maps.geometry.spherical.computeOffset(ne, 100000, 180);
     this.selectedArea[1]={lat: se.lat(),lng: se.lng()};
-    let sw = google.maps.geometry.spherical.computeOffset(se, 50000, 270);
+    let sw = google.maps.geometry.spherical.computeOffset(se, 100000, 270);
     this.selectedArea[2]={lat: sw.lat(),lng: sw.lng()};
-    let nw = google.maps.geometry.spherical.computeOffset(sw, 50000, 0);
+    let nw = google.maps.geometry.spherical.computeOffset(sw, 100000, 0);
     this.selectedArea[3]={lat: nw.lat(),lng: nw.lng()};
   }
 
