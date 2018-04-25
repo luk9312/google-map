@@ -6,12 +6,15 @@ import { ElevationService } from './elevation.service';
 
 
 import { AppComponent } from './app.component';
+import { ModelComponent } from './Model/model.component';
+
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ModelComponent
   ],
   imports: [
     BrowserModule,
