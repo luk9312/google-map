@@ -81,8 +81,8 @@ export class ModelComponent implements OnInit{
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(view.angle, view.aspect, view. near, view.far);
     this.scene.add(new THREE.AxesHelper(50));
-    this.camera.position.set(60,100,100);
-    this.camera.lookAt(new THREE.Vector3(0,0,0));
+    this.camera.position.set(0,0,0);
+    // this.camera.lookAt(new THREE.Vector3(0,0,0));
     this.scene.add(this.camera);
   }
 
@@ -100,13 +100,12 @@ export class ModelComponent implements OnInit{
     let geometry = new THREE.PlaneGeometry(60, 60, 9, 9);
     console.log('geo',geometry.vertices[0].z);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = data[i] / 6553 * 60;
+      geometry.vertices[i].z = data[i] / 2000 * 60;
     }
     let material = new THREE.MeshBasicMaterial({ color : 0xFFFFFF, wireframe: true });
     console.log('geo',geometry.vertices[0].z);
     this.plane = new THREE.Mesh( geometry, material );
-    this.plane.position.set(0,0,0);
-    this.plane.rotateX(90);
+    this.plane.position.set(0,0,-200);
     this.scene.add(this.plane);
   }
 }

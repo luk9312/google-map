@@ -1,7 +1,7 @@
 import { Component, ElementRef, NgModule, NgZone, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import { FormControl, FormsModule } from "@angular/forms";
 
-import { MouseEvent, MapsAPILoader, AgmPolygon } from '@agm/core';
+import { MouseEvent, MapsAPILoader, AgmPolygon, LatLng } from '@agm/core';
 import {} from '@types/googlemaps';
 
 import { ElevationService } from './elevation.service';
@@ -34,6 +34,8 @@ export class AppComponent implements OnInit,AfterViewInit{
   height: number;
   marker: marker;
   public searchControl: FormControl;
+  data: LatLng[];
+  eleData =[];
 
   // set paths
   selectedArea = [];
@@ -126,14 +128,36 @@ export class AppComponent implements OnInit,AfterViewInit{
     this.marker.lng = $event.coords.lng;
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
-    let lot1 = new google.maps.LatLng($event.coords.lat, $event.coords.lng);
-    let testing = [lot1];               
-    this.getElevation(testing);
+    // let lot1 = new google.maps.LatLng($event.coords.lat, $event.coords.lng);
+    // let testing = [lot1];               
+    // this.getElevation(testing);
+    let pointnw =  new google.maps.LatLng(this.selectedArea[3].lat, this.selectedArea[3].lng);
+    let pointne =  new google.maps.LatLng(this.selectedArea[0].lat, this.selectedArea[0].lng);
+    let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
+    let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
+    this.getSelectedCoor(pointnw, pointne, pointsw, pointse);
+  }
+  
+  getSelectedCoor (nw,ne,sw,se){
+    let startPoint: LatLng = nw
+    let endPoint :LatLng = ne
+    let point: LatLng;
+    let result: LatLng[] = [];
+    for(let i = 0 ; i < 200 ; i++) {
+      for (let j = 0; j < 200 ; j++) {
+        point = google.maps.geometry.spherical.interpolate(startPoint, endPoint, (0.005*j));
+        result=[...result, point];
+      }
+      startPoint = google.maps.geometry.spherical.interpolate(startPoint, sw, (0.005*i));
+      endPoint = google.maps.geometry.spherical.interpolate(endPoint, se, (0.005*i));
+    }
+    this.getElevation (result);
   }
 
   getElevation (arr) {
     this.elevation.getData(arr).subscribe(resp => {
       let dataSet = resp.results;
+      this.eleData = [... this.eleData, dataSet];
       console.log(dataSet);
     })
   }
