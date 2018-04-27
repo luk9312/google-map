@@ -37,7 +37,13 @@
   </agm-map>
 
   <div>
-    <h3>Elvetion at position C: {{ this.height }}</h3>
+    <h3>Elvetion at points: </h3>
+    <p>{{ listOfP.length }}</p>
+    <ul>
+      <li *ngFor="let loc of listOfP;let i = index;">
+        {{i}}: start lat = {{loc[0].lat()}}, lng = {{loc[0].lng()}} . end lat = {{loc[1].lat()}}, endlng = {{loc[1].lng()}}
+      </li>
+    </ul>
   </div>
 
   <!-- <geometry-cube></geometry-cube> -->

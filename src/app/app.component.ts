@@ -3,8 +3,11 @@ import { FormControl, FormsModule } from "@angular/forms";
 
 import { MouseEvent, MapsAPILoader, AgmPolygon, LatLng } from '@agm/core';
 import {} from '@types/googlemaps';
+import { Observable } from 'rxjs/Observable';
 
 import { ElevationService } from './elevation.service';
+import { Subscription } from 'rxjs/Subscription';
+import { HttpClient } from '@angular/common/http';
 
 declare var google: any;
 
@@ -23,7 +26,6 @@ interface marker {
 })
 
 export class AppComponent implements OnInit,AfterViewInit{
-
   // google maps zoom level
   zoom: number;
   
@@ -34,8 +36,8 @@ export class AppComponent implements OnInit,AfterViewInit{
   height: number;
   marker: marker;
   public searchControl: FormControl;
-  data: LatLng[];
-  eleData =[];
+  listOfP: LatLng[][] = [];
+  eleData=[];
 
   // set paths
   selectedArea = [];
@@ -50,7 +52,8 @@ export class AppComponent implements OnInit,AfterViewInit{
   constructor(
     private elevation: ElevationService,
     private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private http:HttpClient
   ){}
 
   ngOnInit(){
@@ -126,6 +129,7 @@ export class AppComponent implements OnInit,AfterViewInit{
   markerDragEnd(m: marker, $event: MouseEvent) {
     this.marker.lat = $event.coords.lat;
     this.marker.lng = $event.coords.lng;
+    this.listOfP = [];
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
     // let lot1 = new google.maps.LatLng($event.coords.lat, $event.coords.lng);
@@ -136,30 +140,39 @@ export class AppComponent implements OnInit,AfterViewInit{
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
     this.getSelectedCoor(pointnw, pointne, pointsw, pointse);
+    this.eleData = [...this.eleData,this.testing(this.listOfP)];
+    // console.log('pointnw',pointnw.lat(),pointnw.lng());
+    // console.log('pointne',pointne.lat(),pointne.lng());
+    // console.log('pointsw',pointsw.lat(),pointsw.lng());
+    // console.log('pointse',pointse.lat(),pointse.lng());
+    
   }
   
   getSelectedCoor (nw,ne,sw,se){
-    let startPoint: LatLng = nw
-    let endPoint :LatLng = ne
-    let point: LatLng;
+    let startPoint: LatLng
+    let endPoint :LatLng
     let result: LatLng[] = [];
     for(let i = 0 ; i < 200 ; i++) {
-      for (let j = 0; j < 200 ; j++) {
-        point = google.maps.geometry.spherical.interpolate(startPoint, endPoint, (0.005*j));
-        result=[...result, point];
-      }
-      startPoint = google.maps.geometry.spherical.interpolate(startPoint, sw, (0.005*i));
-      endPoint = google.maps.geometry.spherical.interpolate(endPoint, se, (0.005*i));
+      // for (let j = 0; j < 200 ; j++) {
+      //   point = google.maps.geometry.spherical.interpolate(startPoint, endPoint, (0.005*j));
+      //   result=[...result, point];
+      // }
+      startPoint = google.maps.geometry.spherical.interpolate(nw, sw, (0.005*i));
+      endPoint = google.maps.geometry.spherical.interpolate(ne, se, (0.005*i));
+      this.listOfP = [...this.listOfP, [startPoint, endPoint]];
     }
-    this.getElevation (result);
+    // this.getElevation (result);
   }
 
-  getElevation (arr) {
-    this.elevation.getData(arr).subscribe(resp => {
-      let dataSet = resp.results;
-      this.eleData = [... this.eleData, dataSet];
-      console.log(dataSet);
-    })
+  // getElevation (arr) {
+  //   this.elevation.getData(arr).subscribe(resp => {
+  //     let dataSet = resp.results;
+  //     this.eleData = [... this.eleData, dataSet];
+  //     console.log(dataSet);
+  //   })
+  // }
+  testing(arr){
+    this.elevation.testing(arr);
   }
 
 
