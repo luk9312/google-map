@@ -42,3 +42,11 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+#functions
+/functions/node_modules
+/functions/*.json
+
+#functions
+.firebaserc
+firebase.json

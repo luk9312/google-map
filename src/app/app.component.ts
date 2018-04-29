@@ -25,7 +25,7 @@ interface marker {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit,AfterViewInit{
+export class AppComponent implements OnInit{
   // google maps zoom level
   zoom: number;
   
@@ -37,16 +37,16 @@ export class AppComponent implements OnInit,AfterViewInit{
   marker: marker;
   public searchControl: FormControl;
   listOfP: LatLng[][] = [];
-  eleData=[];
+  eleData:Promise<any>;
 
   // set paths
   selectedArea = [];
   
-  // @ViewChild("search")
-  // public searchElementRef: ElementRef;
+  @ViewChild("search")
+  public searchElementRef: ElementRef;
 
-  // @ViewChild(AgmPolygon)
-  // selected:AgmPolygon;
+  @ViewChild(AgmPolygon)
+  selected:AgmPolygon;
   
 
   constructor(
@@ -70,7 +70,6 @@ export class AppComponent implements OnInit,AfterViewInit{
       draggable: true,
       visible: true
     };
-    console.log(this.selectedArea);
 
     //create search FormControl
     this.searchControl = new FormControl();
@@ -104,8 +103,6 @@ export class AppComponent implements OnInit,AfterViewInit{
     //   });
     // });
   }
-  
-  ngAfterViewInit(){}
 
   setup($event){
     this.selectedArea=[];
@@ -132,20 +129,16 @@ export class AppComponent implements OnInit,AfterViewInit{
     this.listOfP = [];
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
-    // let lot1 = new google.maps.LatLng($event.coords.lat, $event.coords.lng);
-    // let testing = [lot1];               
-    // this.getElevation(testing);
+
     let pointnw =  new google.maps.LatLng(this.selectedArea[3].lat, this.selectedArea[3].lng);
     let pointne =  new google.maps.LatLng(this.selectedArea[0].lat, this.selectedArea[0].lng);
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
     this.getSelectedCoor(pointnw, pointne, pointsw, pointse);
-    this.eleData = [...this.eleData,this.testing(this.listOfP)];
-    // console.log('pointnw',pointnw.lat(),pointnw.lng());
-    // console.log('pointne',pointne.lat(),pointne.lng());
-    // console.log('pointsw',pointsw.lat(),pointsw.lng());
-    // console.log('pointse',pointse.lat(),pointse.lng());
+
+    this.testing(this.listOfP);
     
+
   }
   
   getSelectedCoor (nw,ne,sw,se){
@@ -161,7 +154,6 @@ export class AppComponent implements OnInit,AfterViewInit{
       endPoint = google.maps.geometry.spherical.interpolate(ne, se, (0.005*i));
       this.listOfP = [...this.listOfP, [startPoint, endPoint]];
     }
-    // this.getElevation (result);
   }
 
   // getElevation (arr) {
@@ -172,7 +164,11 @@ export class AppComponent implements OnInit,AfterViewInit{
   //   })
   // }
   testing(arr){
-    this.elevation.testing(arr);
+    this.eleData = this.elevation.testing(arr)
+      // .then(result => {
+      //   console.log(result);
+      //   this.eleData = result
+      // });
   }
 
 

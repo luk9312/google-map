@@ -5,6 +5,8 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/timeInterval';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/take';
+import * as PromisePool from 'es6-promise-pool';
+import { GoogleMapsAPIWrapper } from '@agm/core';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -30,10 +32,12 @@ export class ElevationService {
   googleUrl: string ='https://maps.googleapis.com/maps/api/elevation/json?path=';
   sample: number = 200;
   key: string = 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo';
-  result=[];
+  result = [];
+  count = 1;
 
   constructor(
-    private http:HttpClient
+    private http:HttpClient,
+    private _wrapper:GoogleMapsAPIWrapper
   ) {}
 
   // getData(arr) {
@@ -52,26 +56,65 @@ export class ElevationService {
   // }
 
   testing(arr){
+
+    let param =this.sample
+    let output = [];
+    // let LofP =arr.map(pair => {
+    //   this.elevationPromise(pair, param).then(result => {
+    //     console.log(result);
+    //   })
+    // });
+    return this.delayMap(2000, [arr,param])
+      .then(Promise.all.bind(Promise))
+        .then(result => {
+          result.forEach(list => {
+            list.forEach(item => {
+              output = [...output,item];
+            })
+          });
+          console.log('result',result);
+          return output;})
+        .catch(err => console.log('Error', err));
+    // Promise.all(LofP)
+    //   .then(result => {
+        // result.forEach(list => {
+        //   list.forEach(item => {
+        //     output = [...output,item];
+        //   })
+        // });
+        // console.log('result',result);
+        // return output;})
+    //   .catch(err => console.log('Error', err));
+  }
+
+  elevationPromise(arr, param) {
     let elevator = new google.maps.ElevationService
     console.log('debug',arr);
-    elevator.getElevationAlongPath({
-      'path': arr[0],
-      'samples': this.sample
-    },(elevations, status) => {
-      console.log('status',status);
-      console.log('elevations',elevations.map(x => x.location.lat()));
-      if (status !== 'OK') {
-        return;
-      }
-      this.result = [...this.result,elevations];
-      if ( arr.length !== 1){
-        arr.shift()
-        setTimeout(() => {
-          this.testing(arr);
-        },5000);
-      }
+    return new Promise((resolve,reject) => {
+      elevator.getElevationAlongPath({
+        'path': arr,
+        'samples': param
+      },function(results, status) {
+        if (status == google.maps.ElevationStatus.OK) {
+          // resolve results upon a successful status
+          resolve(results);
+        } else {
+          // reject status upon un-successful status
+          reject(status);
+        }
+      })
     })
-    return this.result;
+  }
+
+  sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+  delayMap = async (ms, arr) => {
+    const results = []
+    for (const item of arr[0]) {
+      results.push(await this.elevationPromise(item, arr[1]))
+      await this.sleep(ms)
+    }
+    return results
   }
 
 }
