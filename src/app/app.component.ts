@@ -39,6 +39,8 @@ export class AppComponent implements OnInit{
   listOfP: LatLng[][] = [];
   eleData:Promise<any>;
 
+  testpoint;
+
   // set paths
   selectedArea = [];
   
@@ -164,7 +166,10 @@ export class AppComponent implements OnInit{
   //   })
   // }
   testing(arr){
-    this.eleData = this.elevation.testing(arr)
+    let highpoint = new google.maps.LatLng(27.986065, 86.922623)
+    let lowpoint = new google.maps.LatLng(11.3499986, 142.1999992);
+    this.elevation.getData([lowpoint]);
+    // this.eleData = this.elevation.testing(arr)
       // .then(result => {
       //   console.log(result);
       //   this.eleData = result

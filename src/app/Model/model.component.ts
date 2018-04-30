@@ -52,11 +52,11 @@ export class ModelComponent implements OnInit{
 
     this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
     //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
-    this.controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    this.controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
     this.controls.dampingFactor = 0.25;
     this.controls.minDistance = 100;
-    this.controls.maxDistance = 500
-    this.controls.maxPolarAngle = Math.PI / 2;
+    this.controls.maxDistance = 5000
+    this.controls.maxAzimuthAngle = Math.PI;
     
     this.render();
   }
@@ -88,15 +88,15 @@ export class ModelComponent implements OnInit{
 
     let view = {
       angle  : 50,
-      aspect : screen.width / screen.height,
-      near   : 1,
+      aspect : (window.innerWidth / 2)/window.innerHeight,
+      near   : 0.1,
       far    : 10000
     };
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(view.angle, view.aspect, view. near, view.far);
-    this.scene.add(new THREE.AxesHelper(50));
-    this.camera.position.set(1500,1500,1500);
+    this.scene.add(new THREE.AxesHelper(500));
+    this.camera.position.set(20, -80, 100);
     // this.camera.lookAt(new THREE.Vector3(0,0,0));
     this.scene.add(this.camera);
 
@@ -107,7 +107,7 @@ export class ModelComponent implements OnInit{
     let geometry = new THREE.PlaneGeometry(1000,1000, 199, 199);
     console.log('geo',geometry.vertices[0].z);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = data[i] / 100;
+      geometry.vertices[i].z = data[i]/10 ;
     }
     let material = new THREE.MeshBasicMaterial({ color : 0xFFFFFF, wireframe: true });
     console.log('geo',geometry.vertices[0].z);

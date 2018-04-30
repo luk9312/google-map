@@ -35,25 +35,30 @@ export class ElevationService {
   result = [];
   count = 1;
 
+  testpoint = [];
+
+
   constructor(
     private http:HttpClient,
     private _wrapper:GoogleMapsAPIWrapper
   ) {}
 
-  // getData(arr) {
+  getData(location) {
 
-  //   let location = arr.map(latlng => {
-  //     return {
-  //       'latitude': latlng.lat(),
-  //       "longitude": latlng.lng()
-  //     }
-  //   });
-  //   let request = {
-  //     'locations': location
-  //   };
+    let elevator = new google.maps.ElevationService;
+    elevator.getElevationForLocations({
+      'locations': location
+    }, (result,status) => {
+      if (status === google.maps.ElevationStatus.OK) {
+        console.log('highpoint',result);
+        this.testpoint= [... this.testpoint, result];
+      } else {
+        console.log(status);
+      }
+    });
 
-  //   return this.http.post<Result>(this.configUrl,request,httpOptions);
-  // }
+    return this.testpoint;
+  }
 
   testing(arr){
 
@@ -95,7 +100,7 @@ export class ElevationService {
         'path': arr,
         'samples': param
       },function(results, status) {
-        if (status == google.maps.ElevationStatus.OK) {
+        if (status === google.maps.ElevationStatus.OK) {
           // resolve results upon a successful status
           resolve(results);
         } else {

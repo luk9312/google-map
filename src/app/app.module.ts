@@ -9,6 +9,7 @@ import { ModelService } from './Model/model.service';
 
 import { AppComponent } from './app.component';
 import { ModelComponent } from './Model/model.component';
+import { HeatmapComponent } from './Heatmap/heatmap.component';
 
 
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
@@ -17,7 +18,8 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 @NgModule({
   declarations: [
     AppComponent,
-    ModelComponent
+    ModelComponent,
+    HeatmapComponent
   ],
   imports: [
     BrowserModule,
