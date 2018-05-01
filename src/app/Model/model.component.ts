@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { ModelService } from './model.service';
 import * as THREE from 'three';
 window['THREE'] = THREE;
@@ -9,7 +9,7 @@ import 'three/examples/js/controls/OrbitControls';
   templateUrl: 'model.component.html',
   styleUrls: ['model.component.css']
 })
-export class ModelComponent implements OnInit{
+export class ModelComponent implements OnInit, AfterViewInit{
 
   private container : HTMLElement;
 
@@ -18,7 +18,12 @@ export class ModelComponent implements OnInit{
   }
 
   @ViewChild('canvas')
-  private canvasRef: ElementRef;  
+  private canvasRef: ElementRef;
+
+  @ViewChild('heatmap')
+  private maplayer;
+
+  private image;
 
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
@@ -30,24 +35,24 @@ export class ModelComponent implements OnInit{
   constructor(
     private modelService :ModelService
   ){
-    console.log(THREE);
 
   }
   
   ngOnInit(){
-    
-    console.log(this.canvas);
+  }
 
+  ngAfterViewInit() {
+    this.image = this.maplayer.image;
     this.setScene();
     this.setMap();
     this.setRenderer();
+
   }
 
   setRenderer(){
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    console.log('canvas',this.canvas.clientWidth)
     document.body.appendChild(this.renderer.domElement);
 
     this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
@@ -94,8 +99,10 @@ export class ModelComponent implements OnInit{
     };
 
     this.scene = new THREE.Scene();
+    // this.scene.background = new THREE.Color(0xFFFFFF);
     this.camera = new THREE.PerspectiveCamera(view.angle, view.aspect, view. near, view.far);
     this.scene.add(new THREE.AxesHelper(500));
+    // this.scene.add(new THREE.AmbientLight(0xeeeeee));
     this.camera.position.set(20, -80, 100);
     // this.camera.lookAt(new THREE.Vector3(0,0,0));
     this.scene.add(this.camera);
@@ -105,12 +112,12 @@ export class ModelComponent implements OnInit{
   setMap(){
     let data:number[] =  this.modelService.elevationDataSet;
     let geometry = new THREE.PlaneGeometry(1000,1000, 199, 199);
-    console.log('geo',geometry.vertices[0].z);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = data[i]/10 ;
+      geometry.vertices[i].z = data[i]/50 ;
     }
-    let material = new THREE.MeshBasicMaterial({ color : 0xFFFFFF, wireframe: true });
-    console.log('geo',geometry.vertices[0].z);
+    let texture = new THREE.Texture(this.image);
+    texture.needsUpdate = true;
+    let material = new THREE.MeshBasicMaterial({ map: texture });
     this.plane = new THREE.Mesh( geometry, material );
     this.plane.position.set(0,0,0);
     this.scene.add(this.plane);

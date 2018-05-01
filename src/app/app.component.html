@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>Angular 2 + Google Maps Places Autocomplete</h1>
+  <h1>Angular 2 + Google map testing</h1>
 
   <div *ngIf="false">
     <div class="form-group">
@@ -12,6 +12,9 @@
         class="form-control" 
         #search 
         [formControl]="searchControl">
+      <button (click)="onComfirm($event)">
+        Comfirm
+      </button>
     </div>
 
     <agm-map 
@@ -63,12 +66,8 @@
     </div>
   </div>  
 
-  <div *ngIf="false">
-    <geometry-cube></geometry-cube>
-  </div>
-
   <div *ngIf="true">
-    <heatmap></heatmap>
+    <geometry-cube></geometry-cube>
   </div>
 
 </div>

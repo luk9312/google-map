@@ -14,45 +14,76 @@ export class HeatmapComponent implements OnInit,AfterContentInit {
   color;
   canvas;
   context;
+  contextShaded;
+  image;
+  projection = d3.geoAzimuthalEqualArea()
+    .rotate([-8.2, -46.8])
+    .translate([100, 100])
+    .scale(12000);
 
   constructor(
     private modelService:ModelService
   ) {}
 
   ngOnInit() {
-    this.i0 = d3.interpolate(d3.cubehelix(66.7, 0.23, 0), d3.cubehelix(66.7, 0.23, 1));
+    this.i0 = d3.interpolate(d3.cubehelix(99, 0.6, 0.45), d3.cubehelix(66.7, 0.23, 1));
     // this.i1 = d3.interpolate(d3.cubehelix(60, 1, 0.90), d3.cubehelix(0, 0, 0.95));
     this.color = d3.scaleSequential(this.interpolateTerrain).domain([-1000, 5000]);
     this.canvas = d3.select("canvas")
         .attr("width", 1000)
         .attr("height", 1000);
     this.context = this.canvas.node().getContext("2d")
+    
+    let canvasShaded = d3.select("body").append("canvas")
+      .attr("width", 1000)
+      .attr("height", 1000)
+      .style("display","none");
+    this.contextShaded = canvasShaded.node().getContext("2d");
   }
 
   ngAfterContentInit() {
-
-    d3.select("p").style("color", "red");
-
-    
     let n = 200,
         m = 200;
-  
-    
-  
-    let image = this.context.createImageData(n, m);
+    // the color image
+    this.image = this.context.createImageData(n, m);
   
     for (let j = 0, k = 0, l = 0; j < m; ++j) {
       for (let i = 0; i < n; ++i, ++k, l += 4) {
         let c = d3.rgb(this.color(this.modelService.elevationDataSet[k]));
-        image.data[l + 0] = c.r;
-        image.data[l + 1] = c.g;
-        image.data[l + 2] = c.b;
-        image.data[l + 3] = 255;
+        this.image.data[l + 0] = c.r;
+        this.image.data[l + 1] = c.g;
+        this.image.data[l + 2] = c.b;
+        this.image.data[l + 3] = 255;
       }
     }
+    this.image = this.scaleImageData(this.image,5)
   
-    this.context.putImageData(this.scaleImageData(image,5), 0, 0);
+    this.context.putImageData(this.image, 0, 0);
 
+    // the shaded image
+    // let idShaded = this.contextShaded.createImageData(n,m);
+    // let posShaded = 0;
+    // for(var j = 0; j<m; j++){
+    //   for(var i = 0; i<n; i++){
+    //     var pointCoords = this.projection.invert([i,j]);
+    //     var px = invGeoTransform[0] + pointCoords[0]* invGeoTransform[1];
+    //     var py = invGeoTransform[3] + pointCoords[1] * invGeoTransform[5];
+  
+    //     var shadedValue;
+    //     if(Math.floor(px) >= 0 && Math.ceil(px) < image.getWidth() && Math.floor(py) >= 0 && Math.ceil(py) < image.getHeight()){
+    //       shadedValue = 255*(1+shadedData[Math.floor(py)][Math.floor(px)])/2;
+  
+    //     } else {
+    //       shadedValue = 255;
+    //     }
+    //     dataShaded[posShaded]   = shadedValue;
+    //     dataShaded[posShaded+1]   = shadedValue;
+    //     dataShaded[posShaded+2]   = shadedValue;
+    //     dataShaded[posShaded+3]   = 255 - shadedValue;
+  
+    //     posShaded=posShaded+4;
+    //   }
+    // }
 
   }
 
