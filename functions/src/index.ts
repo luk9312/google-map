@@ -253,7 +253,9 @@ let sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 /* Express with CORS & automatic trailing '/' solution */
 const app = express()
-app.use(cors({ origin: true }))
+app.use(cors({ origin: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.post("*", async (request, response) => {
   try {
     let result =[];
