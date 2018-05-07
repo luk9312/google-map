@@ -4,7 +4,7 @@ import * as gmap from '@google/maps';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
 
-let testingData =[
+const testingData =[
   [{lat: 43.96615480477465, lng: -81.18443079990305},{lat: 43.972738344811845, lng: -79.95473707648978}],
   [{lat: 43.96166322835406, lng: -81.18443079990305},{lat: 43.96824676839124, lng: -79.95473707648978}],
   [{lat: 43.95717165193346, lng: -81.18443079990305},{lat: 43.96375519197065, lng: -79.95473707648978}],
@@ -214,60 +214,39 @@ const googleMapsClient = gmap.createClient({
   Promise: Promise
 });
 
-let requestEle = (arr) => {
+const requestEle = (arr) => {
   return googleMapsClient.elevationAlongPath({
     path: arr,
     samples: 200
   })
   .asPromise()
   .then((responses) => {
-    console.log('responses: ' + responses.json.results)
     return responses.json.results
   })
   .catch((err) => {
     console.log(err);
   })
-}
+};
 
-let sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-// let delayMap = async (ms, arr) => {
-//   const results = []
-//   for (const item of arr) {
-//     results.push(await requestEle(item))
-//     await sleep(ms)
-//   }
-//   return results
-// }
-
-// let loadtesting = () => {
-//   return delayMap(4000, testingData)
-//     .then(Promise.all.bind(Promise))
-//     .then(results => {
-//       console.log('the results is : ' + results);
-//       return results
-//     })
-//     .catch(err => console.log(err))
-// }
-
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /* Express with CORS & automatic trailing '/' solution */
 const app = express()
 app.use(cors({ origin: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.post("*", async (request, response) => {
+app.get("*", async (request, response) => {
   try {
+    const param = request.body.locations
+    console.log('param: ' + param)
     let result =[];
+    let temp = [];
     console.log('start');
-    result = [...result, await requestEle(testingData[0])];
-    result = [...result , await requestEle(testingData[1])];
-    console.log('wait')
-    // await sleep(4000);
-    result = [...result, await requestEle(testingData[2])];
-    // result = [...result, await requestEle(testingData[3])];
-    // result = [...result, await requestEle(testingData[4])];
-    console.log('final result: ' + result.length)
+    for (const item of testingData) {
+      temp = await requestEle(item);
+      result = [...result, temp];
+    }
+    console.log(result);
     response.json(result);
   } catch(error) {
     console.log(error);
@@ -276,7 +255,7 @@ app.post("*", async (request, response) => {
 
 // not as clean, but a better endpoint to consume
 const api = functions.https.onRequest((request, response) => {
-  console.log('request item: ' + request);
+  console.log('request item: ' + JSON.stringify(request.headers));
   if (!request.path) {
     request.url = `/${request.url}` // prepend '/' to keep query params if any
   }
