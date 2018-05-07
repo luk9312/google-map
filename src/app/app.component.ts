@@ -4,6 +4,7 @@ import { FormControl, FormsModule } from "@angular/forms";
 import { MouseEvent, MapsAPILoader, AgmPolygon, LatLng } from '@agm/core';
 import {} from '@types/googlemaps';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 import { ElevationService } from './elevation.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -38,6 +39,7 @@ export class AppComponent implements OnInit{
   public searchControl: FormControl;
   listOfP: LatLng[][] = [];
   eleData:Promise<any>;
+  data$: Observable<any>;
 
 
   // set paths
@@ -130,38 +132,17 @@ export class AppComponent implements OnInit{
     this.listOfP = [];
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
-
+  }
+  
+  onComfirm($event) {
     let pointnw =  new google.maps.LatLng(this.selectedArea[3].lat, this.selectedArea[3].lng);
     let pointne =  new google.maps.LatLng(this.selectedArea[0].lat, this.selectedArea[0].lng);
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
-    this.getSelectedCoor(pointnw, pointne, pointsw, pointse);
+    this.data$ = this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
+    console.log('button start');
+    console.log('get data$');
 
-    // this.testing([[pointnw, pointne]]);
-    
-
-  }
-  
-  getSelectedCoor (nw,ne,sw,se){
-    let startPoint: LatLng
-    let endPoint :LatLng
-    let result: LatLng[] = [];
-    for(let i = 0 ; i < 200 ; i++) {
-      // for (let j = 0; j < 200 ; j++) {
-      //   point = google.maps.geometry.spherical.interpolate(startPoint, endPoint, (0.005*j));
-      //   result=[...result, point];
-      // }
-      startPoint = google.maps.geometry.spherical.interpolate(nw, sw, (0.005*i));
-      endPoint = google.maps.geometry.spherical.interpolate(ne, se, (0.005*i));
-      this.listOfP = [...this.listOfP, [startPoint, endPoint]];
-    }
-  }
-  onComfirm($event) {
-    this.testing(this.listOfP);
-  }
-
-  testing(arr){
-    this.eleData = this.elevation.testing(arr);
   }
 
 

@@ -6,13 +6,11 @@ import 'rxjs/add/operator/timeInterval';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/take';
 import * as PromisePool from 'es6-promise-pool';
-import { GoogleMapsAPIWrapper } from '@agm/core';
 
 const httpOptions = {
   headers: new HttpHeaders({
     'Accept': 'application/json',
-    'Content-Type':  'application/json',
-    'Access-Control-Allow-Origin': '*'
+    'Content-Type':  'application/json'
   })
 };
 export interface LatLngElv {
@@ -39,87 +37,27 @@ export class ElevationService {
 
 
   constructor(
-    private http:HttpClient,
-    private _wrapper:GoogleMapsAPIWrapper
+    private http:HttpClient
   ) {}
 
-  getData(location) {
-
-    let elevator = new google.maps.ElevationService;
-    elevator.getElevationForLocations({
-      'locations': location
-    }, (result,status) => {
-      if (status === google.maps.ElevationStatus.OK) {
-        console.log('highpoint',result);
-        this.testpoint= [... this.testpoint, result];
-      } else {
-        console.log(status);
-      }
-    });
-
-    return this.testpoint;
-  }
-
-  testing(arr){
-
-    let param =this.sample
-    let output = [];
-    // let LofP =arr.map(pair => {
-    //   this.elevationPromise(pair, param).then(result => {
-    //     console.log(result);
-    //   })
-    // });
-    return this.delayMap(2000, [arr,param])
-      .then(Promise.all.bind(Promise))
-        .then(result => {
-          result.forEach(list => {
-            list.forEach(item => {
-              output = [...output,item];
-            })
-          });
-          console.log('result',result);
-          return output;})
-        .catch(err => console.log('Error', err));
-    // Promise.all(LofP)
-    //   .then(result => {
-        // result.forEach(list => {
-        //   list.forEach(item => {
-        //     output = [...output,item];
-        //   })
-        // });
-        // console.log('result',result);
-        // return output;})
-    //   .catch(err => console.log('Error', err));
-  }
-
-  elevationPromise(arr, param) {
-    let elevator = new google.maps.ElevationService
-    console.log('debug',arr);
-    return new Promise((resolve,reject) => {
-      elevator.getElevationAlongPath({
-        'path': arr,
-        'samples': param
-      },function(results, status) {
-        if (status === google.maps.ElevationStatus.OK) {
-          // resolve results upon a successful status
-          resolve(results);
-        } else {
-          // reject status upon un-successful status
-          reject(status);
-        }
-      })
-    })
-  }
-
-  sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-  delayMap = async (ms, arr) => {
-    const results = []
-    for (const item of arr[0]) {
-      results.push(await this.elevationPromise(item, arr[1]))
-      await this.sleep(ms)
+  getSelectedCoor (nw,ne,sw,se){
+    let startPoint: google.maps.LatLng
+    let endPoint :google.maps.LatLng
+    let result: google.maps.LatLng[][] = [];
+    for(let i = 0 ; i < 200 ; i++) {
+      startPoint = google.maps.geometry.spherical.interpolate(nw, sw, (0.005*i));
+      endPoint = google.maps.geometry.spherical.interpolate(ne, se, (0.005*i));
+      result = [...result, [startPoint, endPoint]];
     }
-    return results
+    return result
   }
+
+  getElevation (nw, ne, sw, se) {
+    let data ={
+      locations: this.getSelectedCoor(nw, ne, sw, se)
+    }
+    return this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions);
+  }
+
 
 }

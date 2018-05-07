@@ -1,7 +1,7 @@
 <div class="container">
   <h1>Angular 2 + Google map testing</h1>
 
-  <div *ngIf="false">
+  <div *ngIf="true">
     <div class="form-group">
       <input 
         placeholder="search for location" 
@@ -42,7 +42,7 @@
 
     <div>
       <h3>Elvetion at points: </h3>
-      <p>{{ (eleData | async)?.length }}</p>
+      <p>{{ (data$  | async)?.length }}</p>
       <table>
         <tr>
           <th>Location number</th>
@@ -50,7 +50,7 @@
           <th>Lng</th>
           <th>Elevation</th>
         </tr>
-        <tr *ngFor="let loc of eleData | async;let i = index;">
+        <tr *ngFor="let loc of data$  | async;let i = index;">
           <th>{{i}}</th>
           <th>{{ loc.location.lat() }}</th> 
           <th>{{ loc.location.lng() }}</th>
@@ -66,7 +66,7 @@
     </div>
   </div>  
 
-  <div *ngIf="true">
+  <div *ngIf="false">
     <geometry-cube></geometry-cube>
   </div>
 
