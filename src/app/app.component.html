@@ -52,15 +52,15 @@
         </tr>
         <tr *ngFor="let loc of data$  | async;let i = index;">
           <th>{{i}}</th>
-          <th>{{ loc.location.lat() }}</th> 
-          <th>{{ loc.location.lng() }}</th>
+          <th>{{ loc[0].location.lat() }}</th> 
+          <th>{{ loc[0].location.lng() }}</th>
           <th>{{ loc.elevation }}</th>
           <th>{{ loc.resolution }}
         </tr>
       </table>
       <ul>
         <li *ngFor="let loc of listOfP ;let i = index;">
-          Location {{i}}  lat: {{loc[0].lat()}} lng: {{loc[0].lng()}}
+          Location {{i}}  Startlat: {{loc[0].lat()}} Startlng: {{loc[0].lng()}} Endlat: {{loc[1].lat()}} Endlng: {{loc[1].lng()}}
         </li>
       </ul>
     </div>

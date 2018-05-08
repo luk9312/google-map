@@ -37,8 +37,7 @@ export class AppComponent implements OnInit{
   height: number;
   marker: marker;
   public searchControl: FormControl;
-  listOfP: LatLng[][] = [];
-  eleData:Promise<any>;
+  listOfP: google.maps.LatLng[][] = [];
   data$: Observable<any>;
 
 
@@ -129,7 +128,6 @@ export class AppComponent implements OnInit{
   markerDragEnd(m: marker, $event: MouseEvent) {
     this.marker.lat = $event.coords.lat;
     this.marker.lng = $event.coords.lng;
-    this.listOfP = [];
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
   }
@@ -140,9 +138,7 @@ export class AppComponent implements OnInit{
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
     this.data$ = this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
-    console.log('button start');
-    console.log('get data$');
-
+    this.listOfP = this.elevation.getSelectedCoor(pointnw, pointne, pointsw, pointse);
   }
 
 

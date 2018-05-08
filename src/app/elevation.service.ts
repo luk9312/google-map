@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/timer';
-import 'rxjs/add/operator/timeInterval';
-import 'rxjs/add/operator/pluck';
-import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeAll';
 import * as PromisePool from 'es6-promise-pool';
 
 const httpOptions = {
@@ -56,7 +54,11 @@ export class ElevationService {
     let data ={
       locations: this.getSelectedCoor(nw, ne, sw, se)
     }
-    return this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions);
+    return this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions)
+      .map(res => {
+        console.log(res[0]);
+        return res;
+      });
   }
 
 
