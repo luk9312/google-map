@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeAll';
 import * as PromisePool from 'es6-promise-pool';
 
 const httpOptions = {
@@ -24,15 +23,10 @@ export interface Result {
 
 @Injectable()
 export class ElevationService {
-  configUrl: string = 'https://api.open-elevation.com/api/v1/lookup';
-  googleUrl: string ='https://maps.googleapis.com/maps/api/elevation/json?path=';
-  sample: number = 200;
+  // configUrl: string = 'https://api.open-elevation.com/api/v1/lookup';
+  // googleUrl: string ='https://maps.googleapis.com/maps/api/elevation/json?path=';
   key: string = 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo';
-  result = [];
-  count = 1;
-
-  testpoint = [];
-
+  data$: Observable<any>;
 
   constructor(
     private http:HttpClient
@@ -54,12 +48,21 @@ export class ElevationService {
     let data ={
       locations: this.getSelectedCoor(nw, ne, sw, se)
     }
-    return this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions)
-      .map(res => {
-        console.log(res[0]);
-        return res;
+    this.data$ = this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions)
+      .map((x) => {
+        let data = this.flatten(x);
+        return data
       });
   }
 
+  flatten (arr) {
+    let result =[]
+    arr.forEach(element => {
+      element.forEach(point => {
+        result = [...result, point];
+      });
+    });
+    return result
+  }
 
 }

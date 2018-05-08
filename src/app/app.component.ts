@@ -38,7 +38,7 @@ export class AppComponent implements OnInit{
   marker: marker;
   public searchControl: FormControl;
   listOfP: google.maps.LatLng[][] = [];
-  data$: Observable<any>;
+  subscribe: Subscription;
 
 
   // set paths
@@ -78,32 +78,32 @@ export class AppComponent implements OnInit{
 
 
     //load Places Autocomplete
-    // this.mapsAPILoader.load().then(() => {
-    //   let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
-    //     types: ["address"]
-    //   });
-    //   autocomplete.addListener("place_changed", () => {
-    //     this.ngZone.run(() => {
-    //       //get the place result
-    //       let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+    this.mapsAPILoader.load().then(() => {
+      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+        types: ["address"]
+      });
+      autocomplete.addListener("place_changed", () => {
+        this.ngZone.run(() => {
+          //get the place result
+          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
   
-    //       //verify result
-    //       if (place.geometry === undefined || place.geometry === null) {
-    //         return;
-    //       }
+          //verify result
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          }
           
-    //       //set latitude, longitude and zoom
-    //       this.lat = place.geometry.location.lat();
-    //       this.lng = place.geometry.location.lng();
-    //       this.marker.lat = place.geometry.location.lat();
-    //       this.marker.lng = place.geometry.location.lng();
-    //       this.zoom = 8;
-    //       this.selectedArea=[];
-    //       console.log('marker',this.marker.lat, this.marker.lng);
-    //       this.setNewPaths(this.marker.lat, this.marker.lng);
-    //     });
-    //   });
-    // });
+          //set latitude, longitude and zoom
+          this.lat = place.geometry.location.lat();
+          this.lng = place.geometry.location.lng();
+          this.marker.lat = place.geometry.location.lat();
+          this.marker.lng = place.geometry.location.lng();
+          this.zoom = 8;
+          this.selectedArea=[];
+          console.log('marker',this.marker.lat, this.marker.lng);
+          this.setNewPaths(this.marker.lat, this.marker.lng);
+        });
+      });
+    });
   }
 
   setup($event){
@@ -132,13 +132,17 @@ export class AppComponent implements OnInit{
     this.setNewPaths(this.marker.lat, this.marker.lng);
   }
   
-  onComfirm($event) {
+  onComfirm() {
     let pointnw =  new google.maps.LatLng(this.selectedArea[3].lat, this.selectedArea[3].lng);
     let pointne =  new google.maps.LatLng(this.selectedArea[0].lat, this.selectedArea[0].lng);
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
-    this.data$ = this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
-    this.listOfP = this.elevation.getSelectedCoor(pointnw, pointne, pointsw, pointse);
+    this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
+    this.subscribe = this.elevation.data$.subscribe(
+      (x) => {},
+      (err) => {},
+      () => console.log('finish')
+    )
   }
 
 
