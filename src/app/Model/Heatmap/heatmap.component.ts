@@ -1,5 +1,5 @@
 import { Component, AfterContentInit, OnInit } from '@angular/core';
-import { ModelService } from '../Model/model.service';
+import { ModelService } from '../model.service';
 import * as d3 from "d3";
 
 @Component({

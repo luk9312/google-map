@@ -4,12 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ElevationService } from './elevation.service';
-import { ModelService } from './Model/model.service';
 
 
 import { AppComponent } from './app.component';
-import { ModelComponent } from './Model/model.component';
-import { HeatmapComponent } from './Heatmap/heatmap.component';
 
 
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
@@ -17,9 +14,7 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ModelComponent,
-    HeatmapComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +27,6 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
     })
   ],
   providers: [
-    ModelService,
     ElevationService,
     GoogleMapsAPIWrapper
   ],
