@@ -235,13 +235,20 @@ const app = express()
 app.use(cors({ origin: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.get("*", async (request, response) => {
+app.use((req, res, next) => {
+  res.setHeader('Accept', 'application/json');
+  res.setHeader('Content-Type',  'application/json');
+  next();
+});
+
+app.post("*", async (request, response) => {
   try {
     const param = request.body.locations
     console.log('param: ' + param)
     let result =[];
     let temp = [];
     console.log('start');
+    // const item = testingData[0];
     for (const item of testingData) {
       temp = await requestEle(item);
       result = [...result, temp];
@@ -255,7 +262,7 @@ app.get("*", async (request, response) => {
 
 // not as clean, but a better endpoint to consume
 const api = functions.https.onRequest((request, response) => {
-  console.log('request item: ' + JSON.stringify(request.headers));
+  console.log('request item: ' + JSON.stringify(request.body));
   if (!request.path) {
     request.url = `/${request.url}` // prepend '/' to keep query params if any
   }
