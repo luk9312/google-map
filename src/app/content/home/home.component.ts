@@ -140,7 +140,13 @@ export class HomeComponent implements OnInit{
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
     this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
-    console.log('press');
+    this.subscribe =  this.elevation.data$.subscribe(
+      (x) => {console.log(x)},
+      (err) => {},
+      () => {
+        this.router.navigate(['/model'])
+      }
+    )
   }
 
 

@@ -33,7 +33,7 @@ export class ModelComponent implements OnInit, AfterViewInit{
 
   private plane : THREE.Mesh;
   private subscribe :Subscription;
-  private data;
+  private data = [];
 
   constructor(
     private elevationService :ElevationService
@@ -43,7 +43,10 @@ export class ModelComponent implements OnInit, AfterViewInit{
   
   ngOnInit(){
     // this.subscribe =  this.elevationService.data$.subscribe(
-    //   data => this.data = data
+    //   data => {
+    //     console.log(data);
+    //     this.data = data;
+    //   }
     // );
   }
 

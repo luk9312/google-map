@@ -13,10 +13,11 @@ export class AuthGuard implements CanActivate{
   ) {}
 
   canActivate(){
-    let data = this.elevationService.dataSet
-    if (data || data !==40000) {
-      return false;
-    }
+    // let data = this.elevationService.dataSet
+    // if (data || data !==40000) {
+    //   return false;
+    // }
+    // return true;
     return true;
   }
 }
