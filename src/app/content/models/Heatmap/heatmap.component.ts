@@ -1,7 +1,7 @@
-import { Component, AfterContentInit, OnInit } from '@angular/core';
-import { ElevationService } from '../../shared/service/elevation.service';
+import { Component, AfterContentInit, OnInit, Input } from '@angular/core';
 import * as d3 from "d3";
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'heatmap',
@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: 'heatmap.component.html'
 })
 export class HeatmapComponent implements OnInit,AfterContentInit {
+  @Input()
+  dataSet: Observable<any>;
   private subscribe :Subscription;
   private data;
   private i0;
@@ -24,13 +26,13 @@ export class HeatmapComponent implements OnInit,AfterContentInit {
     .scale(12000);
 
   constructor(
-    private elevationService:ElevationService
   ) {}
 
   ngOnInit() {
-    // this.subscribe =  this.elevationService.data$.subscribe(
-    //   data => this.data = data
-    // );
+    this.dataSet.subscribe(val => {
+      // deal with asynchronous Observable result
+      this.data = val.map(point => point.elevation);
+    })
     this.i0 = d3.interpolate(d3.cubehelix(99, 0.6, 0.45), d3.cubehelix(66.7, 0.23, 1));
     // this.i1 = d3.interpolate(d3.cubehelix(60, 1, 0.90), d3.cubehelix(0, 0, 0.95));
     this.color = d3.scaleSequential(this.interpolateTerrain).domain([-1000, 5000]);
@@ -51,6 +53,7 @@ export class HeatmapComponent implements OnInit,AfterContentInit {
         m = 200;
     // the color image
     this.image = this.context.createImageData(n, m);
+    console.log(this.data);
   
     for (let j = 0, k = 0, l = 0; j < m; ++j) {
       for (let i = 0; i < n; ++i, ++k, l += 4) {

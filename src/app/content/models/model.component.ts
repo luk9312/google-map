@@ -42,12 +42,11 @@ export class ModelComponent implements OnInit, AfterViewInit{
   }
   
   ngOnInit(){
-    // this.subscribe =  this.elevationService.data$.subscribe(
-    //   data => {
-    //     console.log(data);
-    //     this.data = data;
-    //   }
-    // );
+    this.subscribe =  this.elevationService.data$.subscribe(
+      data => {
+        this.data = data.map(point => point.elevation);;
+      }
+    );
   }
 
   ngAfterViewInit() {
@@ -119,6 +118,7 @@ export class ModelComponent implements OnInit, AfterViewInit{
   }
 
   setMap(){
+    console.log('elevation data', this.data);
     let geometry = new THREE.PlaneGeometry(1000,1000, 199, 199);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
       geometry.vertices[i].z = this.data[i]/50 ;

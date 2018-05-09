@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/publishLast';
 import * as PromisePool from 'es6-promise-pool';
 
 const httpOptions = {
@@ -23,12 +24,15 @@ export interface Result {
   results: LatLngElv[];
 }
 
+
 @Injectable()
 export class ElevationService {
   // configUrl: string = 'https://api.open-elevation.com/api/v1/lookup';
   // googleUrl: string ='https://maps.googleapis.com/maps/api/elevation/json?path=';
   key: string = 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo';
-  data$: Observable<any>;
+  data$: Observable<any> = null;
+  dataSet;
+
 
   constructor(
     private http:HttpClient
@@ -55,7 +59,8 @@ export class ElevationService {
         let data = this.flatten(x);
         return data
       })
-      .share();
+      .publishLast()
+      .refCount()
   }
 
   flatten (arr) {
@@ -67,5 +72,9 @@ export class ElevationService {
     });
     return result
   }
+
+  get(): Observable<any> {
+    return this.data$.map(x => console.log(x));
+}
 
 }

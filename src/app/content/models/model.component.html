@@ -1,5 +1,7 @@
 <div [hidden]="true">
-  <heatmap #heatmap></heatmap>
+  <heatmap 
+    #heatmap
+    [dataSet]="elevationService.data$"></heatmap>
 </div>
 <div>
   <canvas #canvas></canvas>

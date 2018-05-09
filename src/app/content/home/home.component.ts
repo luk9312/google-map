@@ -101,7 +101,6 @@ export class HomeComponent implements OnInit{
           this.marker.lng = place.geometry.location.lng();
           this.zoom = 8;
           this.selectedArea=[];
-          console.log('marker',this.marker.lat, this.marker.lng);
           this.setNewPaths(this.marker.lat, this.marker.lng);
         });
       });
@@ -132,6 +131,7 @@ export class HomeComponent implements OnInit{
     this.marker.lng = $event.coords.lng;
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng);
+    console.log('marker',this.marker.lat, this.marker.lng);
   }
   
   onComfirm() {
@@ -139,6 +139,7 @@ export class HomeComponent implements OnInit{
     let pointne =  new google.maps.LatLng(this.selectedArea[0].lat, this.selectedArea[0].lng);
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
+    console.log('area', pointnw, pointne, pointse, pointsw);
     this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
     this.subscribe =  this.elevation.data$.subscribe(
       (x) => {console.log(x)},
