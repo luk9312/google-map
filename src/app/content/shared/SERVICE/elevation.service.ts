@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
 import * as PromisePool from 'es6-promise-pool';
 
 const httpOptions = {
@@ -26,7 +27,7 @@ export class ElevationService {
   // configUrl: string = 'https://api.open-elevation.com/api/v1/lookup';
   // googleUrl: string ='https://maps.googleapis.com/maps/api/elevation/json?path=';
   key: string = 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo';
-  data$: Observable<any>;
+  dataSet;
 
   constructor(
     private http:HttpClient
@@ -48,10 +49,11 @@ export class ElevationService {
     let data ={
       locations: this.getSelectedCoor(nw, ne, sw, se)
     }
-    this.data$ = this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions)
-      .map((x) => {
-        let data = this.flatten(x);
-        return data
+    console.log('get elevation press')
+    this.http.post('https://us-central1-d-mapping.cloudfunctions.net/api/',data,httpOptions)
+      .do((x) => {
+        this.dataSet  = this.flatten(x);
+        console.log('get call')
       });
   }
 

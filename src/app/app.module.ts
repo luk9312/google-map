@@ -1,21 +1,17 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
 
-import { SharedModule } from './shared/shared.module';
-import { AuthGuard } from './shared/guards/auth.guard';
+// feature modules
+import { ContentModule } from './content/content.module';
 
-
+// components
 import { AppComponent } from './app.component';
 
-
-import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
-
-export const ROUTES: Routes =[
-  { path:'', pathMatch: 'full', component: AppComponent},
-  { path:'model', canActivate: [AuthGuard], loadChildren:'./model/model.module#ModelModule'}
+// routes
+export const ROUTES: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'home' }
 ];
 
 @NgModule({
@@ -24,18 +20,12 @@ export const ROUTES: Routes =[
   ],
   imports: [
     BrowserModule,
-    FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
+    ContentModule,
     RouterModule.forRoot(ROUTES),
-    SharedModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo',
-      libraries: ['places', 'geometry']
-    })
+    
   ],
   providers: [
-    GoogleMapsAPIWrapper
   ],
   bootstrap: [AppComponent]
 })

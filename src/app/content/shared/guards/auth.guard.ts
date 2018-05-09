@@ -13,12 +13,10 @@ export class AuthGuard implements CanActivate{
   ) {}
 
   canActivate(){
-    return this.elevationService.data$
-      .map((data) => {
-        if (data.length !== 40000) {
-          return false
-        }
-        return !!data;
-      });
+    let data = this.elevationService.dataSet
+    if (data || data !==40000) {
+      return false;
+    }
+    return true;
   }
 }
