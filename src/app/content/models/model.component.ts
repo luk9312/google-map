@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { ElevationService } from '../shared/service/elevation.service';
 import * as THREE from 'three';
 window['THREE'] = THREE;
@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: 'model.component.html',
   styleUrls: ['model.component.css']
 })
-export class ModelComponent implements OnInit, AfterViewInit{
+export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
 
   private container : HTMLElement;
 
@@ -55,6 +55,10 @@ export class ModelComponent implements OnInit, AfterViewInit{
     this.setMap();
     this.setRenderer();
 
+  }
+
+  ngOnDestroy() {
+    this.subscribe.unsubscribe();
   }
 
   setRenderer(){

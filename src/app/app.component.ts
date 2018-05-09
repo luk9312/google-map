@@ -9,6 +9,8 @@ import { Component, OnInit} from '@angular/core';
 
 export class AppComponent implements OnInit{
 
+  title: String = 'Angular 2 + Google map testing';
+
   constructor(
   ){}
 

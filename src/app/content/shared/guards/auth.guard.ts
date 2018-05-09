@@ -14,14 +14,15 @@ export class AuthGuard implements CanActivate{
 
   canActivate(){
     if (this.elevationService.data$ === null) {
-      return this.router.navigate(['/home']);
-    }
-    return this.elevationService.data$
-      .map((user) => {
-        if (!user) {
-          this.router.navigate(['/home']);
-        }
-        return !!user;
-      });
+      this.router.navigate(['/home']);
+    } else {
+      return this.elevationService.data$
+        .map((data) => {
+          if (!data) {
+            this.router.navigate(['/home']);
+          }
+          return !!data;
+        });
+      }
     }
   }

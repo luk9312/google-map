@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgModule, NgZone, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, NgModule, NgZone, OnInit, AfterViewInit, ViewChild, OnDestroy} from '@angular/core';
 import { FormControl, FormsModule } from "@angular/forms";
 
 import { MouseEvent, MapsAPILoader, AgmPolygon, LatLng } from '@agm/core';
@@ -27,7 +27,7 @@ interface marker {
   styleUrls: ['./home.component.css']
 })
 
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit, OnDestroy{
   // google maps zoom level
   zoom: number;
   
@@ -105,6 +105,10 @@ export class HomeComponent implements OnInit{
         });
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.subscribe.unsubscribe();
   }
 
   setup($event){
