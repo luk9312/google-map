@@ -2,16 +2,19 @@ import { NgModule } from '@angular/core';
 
 import { ModelComponent } from './model.component';
 import { HeatmapComponent } from './Heatmap/heatmap.component';
-import { ModelService } from './model.service';
+
+import { SharedModule } from '../shared/shared.module';
+
 
 @NgModule({
-  imports: [],
+  imports: [
+    SharedModule
+  ],
   declarations: [
     ModelComponent,
     HeatmapComponent
   ],
   providers: [
-    ModelService
   ]
 })
 export class ModelModule {}

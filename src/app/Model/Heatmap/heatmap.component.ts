@@ -1,6 +1,7 @@
 import { Component, AfterContentInit, OnInit } from '@angular/core';
-import { ModelService } from '../model.service';
+import { ElevationService } from '../../shared/service/elevation.service';
 import * as d3 from "d3";
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'heatmap',
@@ -8,24 +9,28 @@ import * as d3 from "d3";
   templateUrl: 'heatmap.component.html'
 })
 export class HeatmapComponent implements OnInit,AfterContentInit {
-  
-  i0;
-  i1;
-  color;
-  canvas;
-  context;
-  contextShaded;
-  image;
-  projection = d3.geoAzimuthalEqualArea()
+  private subscribe :Subscription;
+  private data;
+  private i0;
+  private i1;
+  private color;
+  private canvas;
+  private context;
+  private contextShaded;
+  private image;
+  private projection = d3.geoAzimuthalEqualArea()
     .rotate([-8.2, -46.8])
     .translate([100, 100])
     .scale(12000);
 
   constructor(
-    private modelService:ModelService
+    private elevationService:ElevationService
   ) {}
 
   ngOnInit() {
+    this.subscribe =  this.elevationService.data$.subscribe(
+      data => this.data = data
+    );
     this.i0 = d3.interpolate(d3.cubehelix(99, 0.6, 0.45), d3.cubehelix(66.7, 0.23, 1));
     // this.i1 = d3.interpolate(d3.cubehelix(60, 1, 0.90), d3.cubehelix(0, 0, 0.95));
     this.color = d3.scaleSequential(this.interpolateTerrain).domain([-1000, 5000]);
@@ -49,7 +54,7 @@ export class HeatmapComponent implements OnInit,AfterContentInit {
   
     for (let j = 0, k = 0, l = 0; j < m; ++j) {
       for (let i = 0; i < n; ++i, ++k, l += 4) {
-        let c = d3.rgb(this.color(this.modelService.elevationDataSet[k]));
+        let c = d3.rgb(this.color(this.data[k]));
         this.image.data[l + 0] = c.r;
         this.image.data[l + 1] = c.g;
         this.image.data[l + 2] = c.b;

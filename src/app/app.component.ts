@@ -6,7 +6,7 @@ import {} from '@types/googlemaps';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { ElevationService } from './elevation.service';
+import { ElevationService } from './shared/service/elevation.service';
 import { Subscription } from 'rxjs/Subscription';
 import { HttpClient } from '@angular/common/http';
 

@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { ModelService } from './model.service';
+import { ElevationService } from '../shared/service/elevation.service';
 import * as THREE from 'three';
 window['THREE'] = THREE;
 import 'three/examples/js/controls/OrbitControls';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'geometry-cube',
@@ -31,14 +32,19 @@ export class ModelComponent implements OnInit, AfterViewInit{
   private controls: THREE.OrbitControls;
 
   private plane : THREE.Mesh;
+  private subscribe :Subscription;
+  private data;
 
   constructor(
-    private modelService :ModelService
+    private elevationService :ElevationService
   ){
 
   }
   
   ngOnInit(){
+    this.subscribe =  this.elevationService.data$.subscribe(
+      data => this.data = data
+    );
   }
 
   ngAfterViewInit() {
@@ -110,10 +116,9 @@ export class ModelComponent implements OnInit, AfterViewInit{
   }
 
   setMap(){
-    let data:number[] =  this.modelService.elevationDataSet;
     let geometry = new THREE.PlaneGeometry(1000,1000, 199, 199);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = data[i]/50 ;
+      geometry.vertices[i].z = this.data[i]/50 ;
     }
     let texture = new THREE.Texture(this.image);
     texture.needsUpdate = true;
