@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgModule, NgZone, OnInit, AfterViewInit, ViewChild, OnDestroy} from '@angular/core';
+import { Component, ElementRef, NgModule, NgZone, OnInit, AfterViewInit, ViewChild, OnDestroy, EventEmitter} from '@angular/core';
 import { FormControl, FormsModule } from "@angular/forms";
 
 import { MouseEvent, MapsAPILoader, AgmPolygon, LatLng } from '@agm/core';
@@ -10,6 +10,7 @@ import { ElevationService } from '../shared/service/elevation.service';
 import { Subscription } from 'rxjs/Subscription';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { MaterializeAction } from 'angular2-materialize';
 
 declare var google: any;
 
@@ -24,7 +25,7 @@ interface marker {
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.scss']
 })
 
 export class HomeComponent implements OnInit, OnDestroy{
@@ -41,6 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy{
   listOfP: google.maps.LatLng[][] = [];
   subscribe: Subscription;
 
+  modalActions = new EventEmitter<string|MaterializeAction>();
 
   // set paths
   selectedArea = [];
@@ -62,7 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy{
 
   ngOnInit(){
     // initial map
-    this.zoom = 12;
+    this.zoom = 8;
     this.lat = 43.473478949190415;
     this.lng = -80.54589994476481;
     this.type = "terrain";
@@ -152,6 +154,19 @@ export class HomeComponent implements OnInit, OnDestroy{
         this.router.navigate(['/model'])
       }
     )
+  }
+
+  testing() {
+    let key = 'Item 1';
+    // localStorage.setItem(key, '10');
+    console.log(localStorage.getItem('key'));
+  }
+
+  openModal() {
+    this.modalActions.emit({action:"modal",params:['open']});
+  }
+  closeModal() {
+    this.modalActions.emit({action:"modal",params:['close']});
   }
 
 

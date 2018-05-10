@@ -1,44 +1,68 @@
-<div>
-  <div class="form-group">
-    <input 
-      placeholder="search for location" 
-      autocorrect="off" 
-      autocapitalize="off" 
-      spellcheck="off" 
-      type="text" 
-      class="form-control" 
-      #search 
-      [formControl]="searchControl">
-    <button (click)="onComfirm()">
-      Comfirm
-    </button>
-  </div>
-
-  <agm-map 
-    [latitude]="lat" 
-    [longitude]="lng" 
-    [mapTypeId]="type"
-    [scrollwheel]="false" 
-    [zoom]="zoom"
-    (mapReady)="setup($event)">
-
-    <agm-marker
-      [latitude]="marker.lat"
-      [longitude]="marker.lng"
-      [label]="marker.label"
-      [markerDraggable]="marker.draggable"
-      [visible]="marker.visible"
-      (dragEnd)="markerDragEnd(marker, $event)">
-    </agm-marker>
-
-    <agm-polygon
-      [paths]="selectedArea">
-    </agm-polygon>
-
-  </agm-map>
+<div class="row">
 
   <div>
-    <h3>Elvetion at points: </h3>
-    <p>{{ (data$  | async)?.length }}</p>
+    <div class="submit col s12 m2">
+      <button class="btn waves-effect waves-light" (click)="onComfirm()">
+        Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </div>
+    <div class="col s12 m10">
+      <button class="btn waves-effect waves-light" (click)="openModal()">
+        Setting
+      </button>
+    </div>
   </div>
+
+  <div class="col s12 valign-wrapper">
+    <div class="col s12">
+      <span>Location Search: </span>
+      <input 
+        placeholder="search for location" 
+        autocorrect="off" 
+        autocapitalize="off" 
+        spellcheck="off" 
+        type="text" 
+        class="form-control" 
+        #search 
+        [formControl]="searchControl">
+    </div>
+  </div>
+
+  <div id="modal1" class="modal" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Close</a>
+      <a class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
+  <div class="col s12">
+    <agm-map 
+      [latitude]="lat" 
+      [longitude]="lng" 
+      [mapTypeId]="type"
+      [scrollwheel]="false" 
+      [zoom]="zoom"
+      (mapReady)="setup($event)">
+
+      <agm-marker
+        [latitude]="marker.lat"
+        [longitude]="marker.lng"
+        [label]="marker.label"
+        [markerDraggable]="marker.draggable"
+        [visible]="marker.visible"
+        (dragEnd)="markerDragEnd(marker, $event)">
+      </agm-marker>
+
+      <agm-polygon
+        [paths]="selectedArea">
+      </agm-polygon>
+
+    </agm-map>
+  </div>
+
 </div>

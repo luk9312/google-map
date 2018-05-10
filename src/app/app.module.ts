@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
+import { MaterializeModule } from 'angular2-materialize';
+
 // feature modules
 import { ContentModule } from './content/content.module';
 
@@ -19,6 +21,7 @@ export const ROUTES: Routes = [
     AppComponent
   ],
   imports: [
+    MaterializeModule,
     BrowserModule,
     HttpClientModule,
     ContentModule,

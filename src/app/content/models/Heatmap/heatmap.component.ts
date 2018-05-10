@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'heatmap',
-  styleUrls: ['heatmap.component.css'],
+  styleUrls: ['heatmap.component.scss'],
   templateUrl: 'heatmap.component.html'
 })
 export class HeatmapComponent implements OnInit,AfterContentInit,OnDestroy {

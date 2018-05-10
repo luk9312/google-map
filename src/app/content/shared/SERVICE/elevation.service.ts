@@ -5,7 +5,6 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/publishLast';
-import * as PromisePool from 'es6-promise-pool';
 
 const httpOptions = {
   headers: new HttpHeaders({

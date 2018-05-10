@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { MaterializeModule } from "angular2-materialize";
 
 import { ModelComponent } from './model.component';
 import { HeatmapComponent } from './Heatmap/heatmap.component';
@@ -13,6 +14,7 @@ export const ROUTES: Routes =[
 
 @NgModule({
   imports: [
+    MaterializeModule,
     SharedModule,
     RouterModule.forChild(ROUTES)
   ],

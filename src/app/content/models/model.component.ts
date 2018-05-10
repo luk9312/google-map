@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'geometry-cube',
   templateUrl: 'model.component.html',
-  styleUrls: ['model.component.css']
+  styleUrls: ['model.component.scss']
 })
 export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
 
@@ -42,6 +42,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
   }
   
   ngOnInit(){
+    console.log('get canvas:', this.canvas);
     this.subscribe =  this.elevationService.data$.subscribe(
       data => {
         this.data = data.map(point => point.elevation);;
@@ -62,7 +63,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   setRenderer(){
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     document.body.appendChild(this.renderer.domElement);

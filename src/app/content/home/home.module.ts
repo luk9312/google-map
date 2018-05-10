@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 
 import { AgmCoreModule } from '@agm/core';
 
+import { MaterializeModule } from "angular2-materialize";
+
 // shared Module
 import { SharedModule } from '../shared/shared.module';
 
@@ -23,6 +25,7 @@ export const ROUTES: Routes =[
     HomeComponent
   ],
   imports: [
+    MaterializeModule,
     CommonModule,
     FormsModule,
     HttpClientModule,
