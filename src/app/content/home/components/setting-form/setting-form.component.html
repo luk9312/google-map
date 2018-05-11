@@ -1,0 +1,41 @@
+<div id="modal1" class="modal" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+    <div class="auth-form">
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()">
+    
+        <div class="modal-content">
+          <ng-content select="h3"></ng-content>
+      
+          <label>
+            <input
+              type="number"
+              placeholder="length"
+              formControlName="length">
+          </label>
+      
+          <label>
+            <input
+              type="number"
+              placeholder="zoom"
+              formControlName="zoom">
+          </label>
+      
+          <div class="error" *ngIf="lengthInvalid">
+            length value is required
+          </div>
+      
+          <div class="error" *ngIf="passwordInvalid">
+            zoom value is required
+          </div>
+
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="waves-effect waves-green btn-flat" (click)="closeModal()">Close</button>
+          <ng-content select="button"></ng-content>
+        </div>
+
+      </form>
+  </div>
+</div>

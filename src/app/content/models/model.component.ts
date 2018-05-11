@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
 
-  private container : HTMLElement;
+  private length:number;
 
   private get canvas() : HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -20,6 +20,9 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
+
+  @ViewChild('3dMap')
+  private mapRef: ElementRef;
 
   @ViewChild('heatmap')
   private maplayer;
@@ -42,7 +45,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
   }
   
   ngOnInit(){
-    console.log('get canvas:', this.canvas);
+    this.length = this.elevationService.length;
     this.subscribe =  this.elevationService.data$.subscribe(
       data => {
         this.data = data.map(point => point.elevation);;
@@ -63,10 +66,10 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   setRenderer(){
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    document.body.appendChild(this.renderer.domElement);
+    this.mapRef.nativeElement.appendChild(this.renderer.domElement);
 
     this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
     //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
@@ -126,7 +129,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
     console.log('elevation data', this.data);
     let geometry = new THREE.PlaneGeometry(1000,1000, 199, 199);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = this.data[i]/50 ;
+      geometry.vertices[i].z = this.data[i]/(this.length/2) ;
     }
     let texture = new THREE.Texture(this.image);
     texture.needsUpdate = true;

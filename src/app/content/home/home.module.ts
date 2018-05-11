@@ -15,6 +15,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthGuard } from '../shared/guards/auth.guard';
 
 import { HomeComponent } from './home.component';
+import { SettingFormComponent } from './components/setting-form/setting-form.component';
 
 export const ROUTES: Routes =[
   { path:'', component: HomeComponent  }
@@ -22,7 +23,8 @@ export const ROUTES: Routes =[
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    SettingFormComponent
   ],
   imports: [
     MaterializeModule,

@@ -31,6 +31,7 @@ export class ElevationService {
   key: string = 'AIzaSyChNp26bxuiShNlfPPoWsNlfXCZtCFeZEo';
   data$: Observable<any> = null;
   dataSet;
+  length:number;
 
 
   constructor(

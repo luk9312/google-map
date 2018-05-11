@@ -1,9 +1,9 @@
-<div [hidden]="false">
+<div [hidden]="true">
   <heatmap 
     #heatmap
     [dataSet]="elevationService.data$"></heatmap>
 </div>
-<div>
+<div #3dMap>
   <h1>test</h1>
-  <canvas #canvas class="container"></canvas>
+  <canvas #canvas></canvas>
 </div>

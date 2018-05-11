@@ -33,8 +33,8 @@ export class HeatmapComponent implements OnInit,AfterContentInit,OnDestroy {
       // deal with asynchronous Observable result
       this.data = val.map(point => point.elevation);
     })
-    this.i0 = d3.interpolate(d3.cubehelix(99, 0.6, 0.45), d3.cubehelix(66.7, 0.23, 1));
-    // this.i1 = d3.interpolate(d3.cubehelix(60, 1, 0.90), d3.cubehelix(0, 0, 0.95));
+    this.i0 = d3.interpolate(d3.cubehelix(99, 0.6, 0.45), d3.cubehelix(58, 0.33, 0.85));
+    this.i1 = d3.interpolate(d3.cubehelix(241, 1, 0.14), d3.cubehelix(241, 1, 0.65));
     this.color = d3.scaleSequential(this.interpolateTerrain).domain([-1000, 5000]);
     this.canvas = d3.select("canvas")
         .attr("width", 1000)
@@ -127,7 +127,7 @@ export class HeatmapComponent implements OnInit,AfterContentInit,OnDestroy {
   }
   
 
-  interpolateTerrain = (t) => this.i0(t * 2);
-  // interpolateTerrain = (t) => t < 0.5 ? this.i0(t * 2) : this.i1((t - 0.5) * 2); 
+  // interpolateTerrain = (t) => this.i0(t * 2);
+  interpolateTerrain = (t) => t > 1/6 ? this.i0((t - 1/6) * 6) : this.i1(t * 6); 
 
 }
