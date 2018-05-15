@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy{
   // initial center position for the map
   lat: number;
   lng: number;
-  type: string;
+  type: string = "terrain";
   height: number;
   marker: marker;
   public searchControl: FormControl;
@@ -73,9 +73,11 @@ export class HomeComponent implements OnInit, OnDestroy{
     if (localStorage.getItem('zoom') !== null) {
       this.zoom = Number(localStorage.getItem('zoom'));
     }
+    if (localStorage.getItem('type') !== null) {
+      this.type = localStorage.getItem('type');
+    }
     this.lat = 43.473478949190415;
     this.lng = -80.54589994476481;
-    this.type = "terrain";
     // initial center point as marker
     this.marker = {
       lat: this.lat,
@@ -177,11 +179,13 @@ export class HomeComponent implements OnInit, OnDestroy{
   }
 
   setting(event: FormGroup){
-    const { length, zoom } = event.value;
-    console.log('setting value: ',length,zoom)
+    const { length, zoom, type } = event.value;
+    console.log('setting value: ',length,zoom, type)
     localStorage.setItem('length', `${length}`);
     localStorage.setItem('zoom', `${zoom}`);
+    localStorage.setItem('type', `${type}`);
     this.zoom = zoom;
+    this.type = type
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng, length);
     this.closeModal();

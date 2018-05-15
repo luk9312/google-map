@@ -10,7 +10,6 @@ import { MaterializeAction } from 'angular2-materialize';
 })
 export class SettingFormComponent implements OnInit {
 
-
   @Input()
   modalActions:EventEmitter<string|MaterializeAction>;
 
@@ -20,12 +19,23 @@ export class SettingFormComponent implements OnInit {
   @Input()
   zoomValue:number;
 
+  @Input()
+  mapType:string;
+
   @Output()
   submitted = new EventEmitter<FormGroup>();
 
+  selectOptions=[
+    {name: 'roadmap', value: 'roadmap'},
+    {name: 'hybrid', value: 'hybrid'},
+    {name: 'satellite', value: 'satellite'},
+    {name: 'terrain', value: 'terrain'}
+  ]
+
   form = this.fb.group({
     length: ['', Validators.required],
-    zoom: ['', Validators.required]
+    zoom: ['', Validators.required],
+    type: ['', Validators.required]
   });
 
   constructor(
@@ -35,7 +45,8 @@ export class SettingFormComponent implements OnInit {
   ngOnInit() {
     this.form.setValue({
       length: this.lengthValue,
-      zoom: this.zoomValue
+      zoom: this.zoomValue,
+      type: this.mapType
     });
   }
 

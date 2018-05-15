@@ -8,34 +8,28 @@
           <ng-content select="h3"></ng-content>
       
           <div class="row">
+
             <div class="col s12 m6">
-              <label>
-                <p>Side Length : </p>
-                <input
-                  type="number"
-                  placeholder="length"
-                  formControlName="length">
-              </label>
+              <label>Side Length : </label>
+              <input
+                type="number"
+                placeholder="length"
+                formControlName="length">
             </div>
         
             <div class="col s12 m6">
-              <label>
-                <p>Map default zoom : </p>
-                <input
-                  type="number"
-                  placeholder="zoom"
-                  formControlName="zoom">
-              </label>
+              <label>Map default zoom : </label>
+              <input
+                type="number"
+                placeholder="zoom"
+                formControlName="zoom">
             </div>
 
             <div class="col s12 m6">
-              <label>
-                <p> : </p>
-                <input
-                  type="number"
-                  placeholder="zoom"
-                  formControlName="zoom">
-              </label>
+              <label>Materialize Select</label>
+              <select formControlName="type" materialize="material_select" [materializeSelectOptions]="selectOptions">
+                <option *ngFor="let option of selectOptions" [value]="option.value">{{option.name}}</option>
+              </select>
             </div>
 
           </div>
