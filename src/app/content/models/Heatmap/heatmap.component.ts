@@ -1,4 +1,5 @@
 import { Component, AfterContentInit, OnInit, Input, OnDestroy } from '@angular/core';
+import { ElevationService } from '../../shared/service/elevation.service';
 import * as d3 from "d3";
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -9,8 +10,6 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: 'heatmap.component.html'
 })
 export class HeatmapComponent implements OnInit,AfterContentInit,OnDestroy {
-  @Input()
-  dataSet: Observable<any>;
   private subscribe :Subscription;
   private data;
   private i0;
@@ -26,10 +25,11 @@ export class HeatmapComponent implements OnInit,AfterContentInit,OnDestroy {
     .scale(12000);
 
   constructor(
+    private elevationService :ElevationService,
   ) {}
 
   ngOnInit() {
-    this.subscribe = this.dataSet.subscribe(val => {
+    this.subscribe = this.elevationService.data$.subscribe(val => {
       // deal with asynchronous Observable result
       this.data = val.map(point => point.elevation);
     })

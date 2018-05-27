@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { ElevationService } from '../shared/service/elevation.service';
+import { Router } from '@angular/router';
 import * as THREE from 'three';
-window['THREE'] = THREE;
-import 'three/examples/js/controls/OrbitControls';
+declare const require: (moduleId: string) => any;
+var OrbitControls = require('three-orbit-controls')(THREE)
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -39,7 +40,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
   private data = [];
 
   constructor(
-    private elevationService :ElevationService
+    private elevationService :ElevationService,
+    private router: Router
   ){
 
   }
@@ -71,7 +73,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.mapRef.nativeElement.appendChild(this.renderer.domElement);
 
-    this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
+    this.controls = new OrbitControls( this.camera, this.renderer.domElement );
     //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
     this.controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
     this.controls.dampingFactor = 0.25;
@@ -129,7 +131,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
     console.log('elevation data', this.data);
     let geometry = new THREE.PlaneGeometry(1000,1000, 199, 199);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = this.data[i]/(this.length/2) ;
+      geometry.vertices[i].z = this.data[i]/(this.length/4) ;
     }
     let texture = new THREE.Texture(this.image);
     texture.needsUpdate = true;
@@ -137,5 +139,10 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy{
     this.plane = new THREE.Mesh( geometry, material );
     this.plane.position.set(0,0,0);
     this.scene.add(this.plane);
+  }
+
+  homePage(){
+    this.elevationService.data$ = null;
+    this.router.navigate(['/home']);
   }
 }

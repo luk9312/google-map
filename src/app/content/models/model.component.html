@@ -1,9 +1,12 @@
 <div [hidden]="true">
   <heatmap 
-    #heatmap
-    [dataSet]="elevationService.data$"></heatmap>
+    #heatmap></heatmap>
 </div>
 <div #3dMap>
-  <h1>test</h1>
   <canvas #canvas></canvas>
+  <div class="homeButton">
+    <button class="btn waves-effect waves-light black" (click)="homePage()">
+      Back
+    </button>
+  </div>
 </div>

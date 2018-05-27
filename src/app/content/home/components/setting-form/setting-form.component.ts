@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validator, Validators } from '@angular/forms';
+import { settingValidators } from './setting.validators';
 
 import { MaterializeAction } from 'angular2-materialize';
 
@@ -33,8 +34,8 @@ export class SettingFormComponent implements OnInit {
   ]
 
   form = this.fb.group({
-    length: ['', Validators.required],
-    zoom: ['', Validators.required],
+    length: ['', [Validators.required,settingValidators.checkLength]],
+    zoom: ['', [Validators.required,settingValidators.checkZoom]],
     type: ['', Validators.required]
   });
 
@@ -62,13 +63,28 @@ export class SettingFormComponent implements OnInit {
     return control.hasError('required') && control.touched;
   }
 
+  get lengthValueInvalid() {
+    const control = this.form.get('length');
+    return this.lengthInvalid ? false : control.hasError('invalidLength') && control.touched;
+  }
+
   get zoomInvalid() {
     const control = this.form.get('zoom');
     return control.hasError('required') && control.touched;
   }
 
+  get zoomValueInvalid() {
+    const control = this.form.get('zoom');
+    return this.zoomInvalid ? false : control.hasError('invalidZoom') && control.touched;
+  }
+
   closeModal() {
     this.modalActions.emit({action:"modal",params:['close']});
+  }
+
+  clean() {
+    localStorage.clear();
+    this.closeModal()
   }
 
 }

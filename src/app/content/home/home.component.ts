@@ -33,10 +33,11 @@ export class HomeComponent implements OnInit, OnDestroy{
   // google maps zoom level
   zoom: number = 8;
   length:number = 100;
+  isLoading: boolean = false;
   
   // initial center position for the map
-  lat: number;
-  lng: number;
+  lat: number = 43.473478949190415;
+  lng: number = -80.54589994476481;
   type: string = "terrain";
   height: number;
   marker: marker;
@@ -46,6 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy{
   toggle:boolean = false;
 
   modalActions = new EventEmitter<string|MaterializeAction>();
+  errorActions = new EventEmitter<string|MaterializeAction>();
 
   // set paths
   selectedArea = [];
@@ -76,8 +78,12 @@ export class HomeComponent implements OnInit, OnDestroy{
     if (localStorage.getItem('type') !== null) {
       this.type = localStorage.getItem('type');
     }
-    this.lat = 43.473478949190415;
-    this.lng = -80.54589994476481;
+    if (localStorage.getItem('lat') !== null) {
+      this.lat = Number(localStorage.getItem('lat'));
+    }
+    if (localStorage.getItem('lng') !== null) {
+      this.lng = Number(localStorage.getItem('lng'));
+    }
     // initial center point as marker
     this.marker = {
       lat: this.lat,
@@ -127,7 +133,6 @@ export class HomeComponent implements OnInit, OnDestroy{
 
   setup($event){
     this.selectedArea=[];
-    console.log('marker',this.marker.lat, this.marker.lng);
     this.setNewPaths(this.marker.lat, this.marker.lng, this.length);
   }
 
@@ -150,7 +155,6 @@ export class HomeComponent implements OnInit, OnDestroy{
     this.marker.lng = $event.coords.lng;
     this.selectedArea = [];
     this.setNewPaths(this.marker.lat, this.marker.lng, this.length);
-    console.log('marker',this.marker.lat, this.marker.lng);
   }
   
   onComfirm() {
@@ -158,12 +162,19 @@ export class HomeComponent implements OnInit, OnDestroy{
     let pointne =  new google.maps.LatLng(this.selectedArea[0].lat, this.selectedArea[0].lng);
     let pointse =  new google.maps.LatLng(this.selectedArea[1].lat, this.selectedArea[1].lng);
     let pointsw =  new google.maps.LatLng(this.selectedArea[2].lat, this.selectedArea[2].lng);
-    console.log('area', pointnw, pointne, pointse, pointsw);
     this.elevation.getElevation(pointnw, pointne, pointsw, pointse);
+    localStorage.setItem('lat', `${this.lat}`)
+    localStorage.setItem('lng', `${this.lng}`)
+    this.isLoading = true;
     this.subscribe =  this.elevation.data$.subscribe(
-      (x) => {console.log(x)},
-      (err) => {},
+      (x) => {},
+      (err) => {
+        this.isLoading = false;
+        this.openErrorMessage();
+        console.log(err);
+      },
       () => {
+        this.isLoading = false;
         this.elevation.length = this.length;
         this.router.navigate(['/model'])
       }
@@ -176,6 +187,14 @@ export class HomeComponent implements OnInit, OnDestroy{
 
   closeModal() {
     this.modalActions.emit({action:"modal",params:['close']});
+  }
+
+  openErrorMessage() {
+    this.errorActions.emit({action:"modal",params:['open']});
+  }
+
+  closeErrorMessage() {
+    this.errorActions.emit({action:"modal",params:['close']});
   }
 
   setting(event: FormGroup){

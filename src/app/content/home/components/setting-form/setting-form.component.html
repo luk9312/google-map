@@ -37,15 +37,24 @@
           <div class="error" *ngIf="lengthInvalid">
             length value is required
           </div>
+
+          <div class="error" *ngIf="lengthValueInvalid">
+            length should be in between 10-100
+          </div>
       
-          <div class="error" *ngIf="passwordInvalid">
+          <div class="error" *ngIf="zoomInvalid">
             zoom value is required
+          </div>
+
+          <div class="error" *ngIf="zoomValueInvalid">
+            zoom should be in between 4-12
           </div>
 
         </div>
         
         <div class="modal-footer">
           <button type="button" class="waves-effect waves-green btn-flat" (click)="closeModal()">Close</button>
+          <button type="button" class="waves-effect waves-green btn-flat" (click)="clean()">Clear Setting</button>
           <ng-content select="button"></ng-content>
         </div>
 
